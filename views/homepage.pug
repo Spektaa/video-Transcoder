@@ -1,0 +1,21 @@
+extends layout
+block content
+	script(type="text/javascript" src='/socket.io/socket.io.js')
+	script(type='text/javascript', src='https://code.jquery.com/jquery-3.2.1.js')
+	#progress
+	script.
+		let socket = io();
+		socket.on('connect', function(){
+		console.log('socket connected on client side')});
+		socket.on('message', function(data){
+		let JSONdata = JSON.parse(data);
+		console.log("message and data" + data)
+		$('#progress').html(() => {
+		if(JSONdata.title === 'Encoding completed'){
+		console.log('JSONdata.title: ' + JSONdata.title);
+		setTimeout(()=>{window.location.replace('http://localhost:5000/download-and-encode')}, 3000);
+		}
+		return '<h1>' + JSONdata.title + '</h1>' + '\n' + '<p>' + JSONdata.progress + '</p>' 
+		});
+		});
+		socket.on('disconnect', function(){});
